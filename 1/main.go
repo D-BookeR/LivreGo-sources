@@ -94,8 +94,6 @@ func main() {
 
 	delete(r, blanc)
 
-	fmt.Println(r)
-
 	w, err := r.winner()
 	if err != nil {
 		fmt.Println("ERROR")
