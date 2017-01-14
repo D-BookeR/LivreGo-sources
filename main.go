@@ -1,119 +1,107 @@
 package main
 
-import "fmt"
-
-// Politician represents one given politician
-type Politician int
-
-const (
-	// BlankVote represents a blank vote
-	BlankVote Politician = iota
-	// VoteChantalRouleau represents a vote for Chantal Rouleau
-	VoteChantalRouleau
-	// VoteLoraineLagace represents a vote for Loraine Lagace
-	VoteLoraineLagace
-	// VoteJeanBaptisteEricDorion represents a vote fore JBE Dorion
-	VoteJeanBaptisteEricDorion
+import (
+	"errors"
+	"fmt"
 )
 
-var politicianList = []string{
-	"Blank vote",
-	"Chantal ROULEAU",
-	"Loraine LAGACÉ",
-	"Jean-Baptiste-Éric DORION",
+type politician struct {
+	Name  string
+	ID    int
+	Party string
 }
 
-func (p *Politician) String() string {
-	return politicianList[*p]
-}
-
-// Elector represents an elector
-type Elector struct {
+type voter struct {
 	Name string
+	ID   int
 }
 
-// Election represents an election
-type Election struct {
-	Title       string
-	Politicians []Politician
-	Electors    []Elector
-	round       int
+func (p politician) String() string {
+	return p.Name + ", of \"" + p.Party + "\""
 }
 
-// NewElection is creating a new election
-// with a title, some electors and politicians of cours
-// this will returns an Election
-func NewElection(title string, el []Elector) *Election {
-	return &Election{
-		Title:       title,
-		Politicians: []Politician{},
-		Electors:    el,
-		round:       0,
+func (v voter) String() string {
+	return v.Name
+}
+
+type votes map[voter]*politician
+
+type round map[politician]int
+
+// IDEA: how to ensure there is only one vote per voter = no need
+
+// Computes the summary of the round
+func (v votes) computeRound() round {
+	r := make(round)
+	for _, p := range v {
+		val, exists := r[*p]
+		if exists {
+			r[*p] = val + 1
+		} else {
+			r[*p] = 1
+		}
 	}
+	return r
 }
 
-// GetResult displays the result of a given election
-func (e *Election) GetResult(v []Vote) string {
-	//TODO : implement this function
-	return ""
-}
+// Notice: no getWinner
+func (r round) winner() (*politician, error) {
+	currentMaxScore := 0
+	secondMaxScore := 0
+	var currentWinner politician
+	var secondToWinner politician
 
-// Vote represents a vote
-type Vote struct {
-	IDUser       int
-	IDPolitician Politician
-}
-
-func (e *Election) String() string {
-	if e.round == 0 {
-		return fmt.Sprintf("Les deux candidats finalistes sont : %+v", e.Politicians)
+	for p, s := range r {
+		if s >= currentMaxScore {
+			secondMaxScore = currentMaxScore
+			currentMaxScore = s
+			secondToWinner = currentWinner
+			currentWinner = p
+		}
 	}
-	return fmt.Sprintf("Votre président(e) est : %+v", e.Politicians)
+
+	if currentMaxScore == secondMaxScore {
+		errString := fmt.Sprintf("Two candidates are tied! %s and %s both have %d votes", currentWinner, secondToWinner, currentMaxScore)
+		return nil, errors.New(errString)
+	}
+
+	return &currentWinner, nil
 }
 
 func main() {
 
-	electorList := []Elector{
-		{"Henri LEPIC"},
-		{"Mathilde MEILICHZON"},
-		{"Mathieu COUPE"},
-		{"Ramzi SAYAL"},
-		{"Rober MENARD"},
-		{"Benjamin DEON"},
-		{"Mireille GAILLARD"},
-		{"Olivier VASELIN"},
-		{"Antoine TARRE"},
+	// Creating data
+	blanc := politician{Name: "Vote blanc"}
+	rouleau := politician{Name: "Chantal Rouleau", ID: 1, Party: "Ensemble demain"}
+	lagace := politician{Name: "Loraine Lagace", ID: 2, Party: "Écologie"}
+	dorion := politician{Name: "Jean-Baptiste Dorion", ID: 3, Party: "Par et pour le peuple"}
+
+	v := make(votes)
+
+	v[voter{Name: "Henri Lepic", ID: 0}] = &rouleau
+	v[voter{Name: "Mathilde Meilichzon", ID: 1}] = &dorion
+	v[voter{Name: "Mathieu Coupe", ID: 2}] = &dorion
+	v[voter{Name: "Ramzi Sayal", ID: 3}] = &lagace
+	v[voter{Name: "Rober Menard", ID: 4}] = &blanc
+	v[voter{Name: "Benjamin Deon", ID: 5}] = &dorion
+	v[voter{Name: "Mireille Gaillard", ID: 6}] = &lagace
+	v[voter{Name: "Olivier Vaselin", ID: 7}] = &lagace
+	v[voter{Name: "Antoine Tarre", ID: 8}] = &dorion
+
+	// IDEA: what happens if a candidate has no vote --> compile error!
+
+	r := v.computeRound()
+
+	delete(r, blanc)
+
+	fmt.Println(r)
+
+	w, err := r.winner()
+	if err != nil {
+		fmt.Println("ERROR")
+		fmt.Println(err)
+		return
 	}
 
-	e := NewElection("Présidentielles 2017", electorList)
-
-	round1 := []Vote{
-		{0, VoteChantalRouleau},
-		{1, VoteJeanBaptisteEricDorion},
-		{2, VoteJeanBaptisteEricDorion},
-		{3, VoteLoraineLagace},
-		{4, BlankVote},
-		{5, VoteJeanBaptisteEricDorion},
-		{6, VoteLoraineLagace},
-		{7, BlankVote},
-		{8, VoteLoraineLagace},
-		{9, VoteJeanBaptisteEricDorion},
-	}
-
-	fmt.Println(e.GetResult(round1))
-
-	round2 := []Vote{
-		{0, VoteJeanBaptisteEricDorion},
-		{1, VoteJeanBaptisteEricDorion},
-		{2, VoteJeanBaptisteEricDorion},
-		{3, VoteLoraineLagace},
-		{4, VoteLoraineLagace},
-		{5, VoteJeanBaptisteEricDorion},
-		{6, VoteLoraineLagace},
-		{7, VoteLoraineLagace},
-		{8, VoteLoraineLagace},
-		{9, VoteJeanBaptisteEricDorion},
-	}
-
-	fmt.Println(e.GetResult(round2))
+	fmt.Printf("The winner is %s!\n", w)
 }
