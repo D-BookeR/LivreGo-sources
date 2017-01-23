@@ -1,0 +1,20 @@
+[
+  {
+    "name" : "Vote blanc"
+  },
+  {
+    "name" : "Chantal Rouleau",
+    "id" : 1,
+    "party" : "Ensemble demain"
+  },
+  {
+    "name" : "Loraine Lagace",
+    "id" : 2,
+    "party" : "Écologie"
+  },
+  {
+    "name" : "Jean-Baptiste Dorion",
+    "id" : 3,
+    "party" : "Par et pour le peuple"
+  }
+]
