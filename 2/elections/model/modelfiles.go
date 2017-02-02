@@ -9,31 +9,31 @@ import (
 	"github.com/Pallinder/go-randomdata"
 )
 
-// ModelFiles is a type
+// ModelFiles holds the information and instruments the liaison of the model with flat JSON files
 type ModelFiles struct {
-	DirPath             string
-	PoliticiansFileName string
-	VotesFileNames      []string
+	DirPath             string   // le répertoire dans lequel tous le fichiers sont
+	PoliticiansFileName string   // le seul fichier dans lequel on trouve les politiciens
+	VotesFileNames      []string // tous les fichiers contenant des votes
 }
 
-// Politician is a type
+// Politician contains all data about one given politician
 type Politician struct {
 	Name  string `json:"name"`
 	ID    int    `json:"id,omitempty"`
 	Party string `json:"party,omitempty"`
 }
 
-// Politicians is a type
+// Politicians is a set of politicians
 type Politicians []Politician
 
-// Vote is a type
+// Vote is the information registered when a voter votes
 type Vote struct {
 	Name         string `json:"name"`
 	ID           string `json:"id"`
 	PoliticianID int    `json:"politician_id"`
 }
 
-// Votes is a type
+// Votes is a set of votes
 type Votes []Vote
 
 func (p Politician) String() string {
@@ -45,9 +45,8 @@ func (v Vote) String() string {
 }
 
 var allPoliticians Politicians
-var allVotes Votes
 
-// AllPoliticians does stuff with caching
+// AllPoliticians fetches all politicians from JSON file if cache is empty, returns the cache otherwise
 func (m *ModelFiles) AllPoliticians() (Politicians, error) {
 	if allPoliticians == nil {
 		file, err := ioutil.ReadFile(path.Join(m.DirPath, m.PoliticiansFileName))
@@ -59,7 +58,7 @@ func (m *ModelFiles) AllPoliticians() (Politicians, error) {
 	return allPoliticians, nil
 }
 
-// PoliticianFromID does stuff with caching
+// PoliticianFromID finds the Politician value when given its ID
 func (m *ModelFiles) PoliticianFromID(ID int) (Politician, error) {
 	ps, err := m.AllPoliticians()
 	if err != nil {
@@ -73,7 +72,9 @@ func (m *ModelFiles) PoliticianFromID(ID int) (Politician, error) {
 	return Politician{}, fmt.Errorf("Politician of ID %d doesn't exist", ID)
 }
 
-// AllVotes does stuff with caching
+var allVotes Votes
+
+// AllVotes fetches all votes from JSON file if cache is empty, returns the cache otherwise
 func (m *ModelFiles) AllVotes() (Votes, error) {
 	if allVotes == nil {
 		allVotes = Votes{}
