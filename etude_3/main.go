@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"votes/3/elections/helper"
-	"votes/3/elections/model"
+	"votes/etude_3/elections/helper"
+	"votes/etude_3/elections/model"
 )
 
 func main() {
@@ -38,6 +38,5 @@ func main() {
 
 	fmt.Printf("The winner is %s!\n", w)
 
-	fmt.Println("******")
 	fmt.Println(len(allVotes))
 }
