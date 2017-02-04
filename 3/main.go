@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	helper "votes/3/elections/helper"
-	model "votes/3/elections/model"
+	"votes/3/elections/helper"
+	"votes/3/elections/model"
 )
 
 func main() {

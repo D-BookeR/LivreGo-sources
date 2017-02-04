@@ -1,4 +1,4 @@
-package elections
+package model
 
 // Reader contains all the functions to read the necessary data
 type Reader interface {

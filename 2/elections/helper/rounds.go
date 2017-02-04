@@ -1,9 +1,9 @@
-package elections
+package helper
 
 import (
 	"errors"
 	"fmt"
-	model "votes/2/elections/model"
+	"votes/2/elections/model"
 )
 
 // Round is a count, for each politician, of the number of votes they got
