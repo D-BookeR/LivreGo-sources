@@ -3,7 +3,8 @@ package helper
 import (
 	"errors"
 	"fmt"
-	"votes/etude_2/elections/model"
+
+	"github.com/D-BookeR/LivreGo-sources/etude_2/elections/model"
 )
 
 // Round is a count, for each politician, of the number of votes they got
