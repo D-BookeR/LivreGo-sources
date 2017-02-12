@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"path"
 	"sync"
-
-	"github.com/Pallinder/go-randomdata"
 )
 
 // ModelFiles holds the information and instruments the liaison of the model with flat JSON files
@@ -103,26 +101,4 @@ func (m *ModelFiles) AllVotes() (Votes, error) {
 		wg.Wait()
 	}
 	return allVotes, nil
-}
-
-// NOT FOR THE BOOK
-
-// GenerateAndWriteVotes does stuff
-func (m *ModelFiles) GenerateAndWriteVotes(nbFiles int, nbVotesPerFiles int, nbPoliticians int) error {
-	for iFile := 1; iFile <= nbFiles; iFile++ {
-		fileName := path.Join(m.DirPath, fmt.Sprintf("votes_%d.json", iFile))
-		var votes Votes
-		for iVote := 0; iVote < nbVotesPerFiles; iVote++ {
-			votes = append(votes, Vote{Name: randomdata.FullName(randomdata.RandomGender), ID: fmt.Sprintf("%d_%d", iFile, iVote), PoliticianID: randomdata.Number(3)})
-		}
-		votesJSON, err := json.Marshal(votes)
-		if err != nil {
-			return err
-		}
-		err = ioutil.WriteFile(fileName, votesJSON, 0640)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
