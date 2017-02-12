@@ -24,7 +24,7 @@ func main() {
 	}
 
 	// Creating the model struct
-	m := model.ModelFiles{DirPath: usr.HomeDir + "/LivreGo-data", PoliticiansFileName: "politicians.json", VotesFileNames: votesFileNames}
+	m := model.FromFiles{DirPath: usr.HomeDir + "/LivreGo-data", PoliticiansFileName: "politicians.json", VotesFileNames: votesFileNames}
 
 	// Getting all votes
 	allVotes, err := m.AllVotes()

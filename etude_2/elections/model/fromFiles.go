@@ -7,8 +7,8 @@ import (
 	"path"
 )
 
-// ModelFiles holds the information and instruments the liaison of the model with flat JSON files
-type ModelFiles struct {
+// FromFiles holds the information and instruments the liaison of the model with flat JSON files
+type FromFiles struct {
 	DirPath             string   // le répertoire dans lequel tous le fichiers sont
 	PoliticiansFileName string   // le seul fichier dans lequel on trouve les politiciens
 	VotesFileNames      []string // tous les fichiers contenant des votes
@@ -45,7 +45,7 @@ func (v Vote) String() string {
 var allPoliticians Politicians
 
 // AllPoliticians fetches all politicians from JSON file if cache is empty, returns the cache otherwise
-func (m *ModelFiles) AllPoliticians() (Politicians, error) {
+func (m *FromFiles) AllPoliticians() (Politicians, error) {
 	if allPoliticians == nil {
 		file, err := ioutil.ReadFile(path.Join(m.DirPath, m.PoliticiansFileName))
 		if err != nil {
@@ -57,7 +57,7 @@ func (m *ModelFiles) AllPoliticians() (Politicians, error) {
 }
 
 // PoliticianFromID finds the Politician value when given its ID
-func (m *ModelFiles) PoliticianFromID(ID int) (Politician, error) {
+func (m *FromFiles) PoliticianFromID(ID int) (Politician, error) {
 	ps, err := m.AllPoliticians()
 	if err != nil {
 		return Politician{}, err
@@ -73,7 +73,7 @@ func (m *ModelFiles) PoliticianFromID(ID int) (Politician, error) {
 var allVotes Votes
 
 // AllVotes fetches all votes from JSON file if cache is empty, returns the cache otherwise
-func (m *ModelFiles) AllVotes() (Votes, error) {
+func (m *FromFiles) AllVotes() (Votes, error) {
 	if allVotes == nil {
 		allVotes = Votes{}
 		for _, fileName := range m.VotesFileNames {
