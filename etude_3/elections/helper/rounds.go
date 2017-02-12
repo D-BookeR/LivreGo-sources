@@ -53,8 +53,7 @@ func (r Round) Winner(m model.Reader) (model.Politician, error) {
 		if err != nil {
 			return model.Politician{}, err
 		}
-		errString := fmt.Sprintf("Two candidates are tied! %s and %s both have %d votes", currentWinnerPolitician, secondToWinnerPolitician, currentMaxScore)
-		return model.Politician{}, errors.New(errString)
+		return model.Politician{}, fmt.Errorf("Two candidates are tied! %s and %s both have %d votes", currentWinnerPolitician, secondToWinnerPolitician, currentMaxScore)
 	}
 
 	currentWinnerPolitician, err := m.PoliticianFromID(currentWinner)

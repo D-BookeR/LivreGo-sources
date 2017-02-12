@@ -65,8 +65,7 @@ func (r round) winner() (politician, error) {
 	}
 
 	if currentMaxScore == secondMaxScore {
-		errString := fmt.Sprintf("Two candidates are tied! %s and %s both have %d votes", currentWinner, secondToWinner, currentMaxScore)
-		return politician{}, errors.New(errString)
+		return politician{}, fmt.Errorf("Two candidates are tied! %s and %s both have %d votes", currentWinner, secondToWinner, currentMaxScore)
 	}
 
 	return currentWinner, nil
