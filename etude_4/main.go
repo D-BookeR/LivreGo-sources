@@ -36,4 +36,14 @@ func main() {
 	fmt.Printf("The winner is %s!\n", w)
 
 	fmt.Println(len(allVotes))
+
+	// Getting the winner directly
+	p, err := m.Winner()
+	if err != nil {
+		fmt.Println("ERROR")
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("The winner is %s!\n", p)
+
 }

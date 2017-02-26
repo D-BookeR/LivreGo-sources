@@ -66,3 +66,30 @@ func (m *FromMongo) AllVotes() (Votes, error) {
 
 	return result, nil
 }
+
+// Winner return the winner directly, by performing a MongoDB aggregation
+func (m *FromMongo) Winner() (Politician, error) {
+	session, err := mgo.Dial(m.Server)
+	if err != nil {
+		return Politician{}, err
+	}
+	defer session.Close()
+
+	c := session.DB(m.DbName).C(m.VotesCollection)
+	resp := bson.M{}
+
+	// db.votes.aggregate([{$group:{_id: "$politician_id", count: {$sum: 1}}},{$sort: {count: -1}},{$limit:1}])
+	pipe := c.Pipe([]bson.M{{"$group": bson.M{"_id": "$politician_id", "count": bson.M{"$sum": 1}}}, bson.M{"$sort": bson.M{"count": -1}}, bson.M{"$limit": 1}})
+	err = pipe.One(&resp)
+	if err != nil {
+		return Politician{}, err
+	}
+
+	// Now that we have the ID, we need to perform another query to find the actual politician
+	p, err := m.PoliticianFromID(resp["_id"].(int))
+	if err != nil {
+		return Politician{}, err
+	}
+
+	return p, nil
+}
