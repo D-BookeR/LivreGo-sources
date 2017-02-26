@@ -15,34 +15,6 @@ type FromFiles struct {
 	VotesFileNames      []string // tous les fichiers contenant des votes
 }
 
-// Politician contains all data about one given politician
-type Politician struct {
-	Name  string `json:"name"`
-	ID    int    `json:"id,omitempty"`
-	Party string `json:"party,omitempty"`
-}
-
-// Politicians is a set of politicians
-type Politicians []Politician
-
-// Vote is the information registered when a voter votes
-type Vote struct {
-	Name         string `json:"name"`
-	ID           string `json:"id"`
-	PoliticianID int    `json:"politician_id"`
-}
-
-// Votes is a set of votes
-type Votes []Vote
-
-func (p Politician) String() string {
-	return p.Name + ", of \"" + p.Party + "\""
-}
-
-func (v Vote) String() string {
-	return v.Name
-}
-
 var allPoliticians Politicians
 
 // AllPoliticians fetches all politicians from JSON file if cache is empty, returns the cache otherwise
