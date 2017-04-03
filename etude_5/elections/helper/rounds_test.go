@@ -8,6 +8,11 @@ import (
 	"github.com/D-BookeR/LivreGo-sources/etude_5/elections/model"
 )
 
+/* A test that never fails! */
+func TestAlwaysPasses(t *testing.T) {
+
+}
+
 /* Simple test for the ComputeRound() function, made of one test case */
 func TestComputeRound(t *testing.T) {
 	// Computed
