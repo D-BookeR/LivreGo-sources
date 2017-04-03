@@ -82,38 +82,26 @@ func TestComputeRounds(t *testing.T) {
 
 /* Now testing Winner(), with mocking and table-driven test with types that were defined */
 
-// Creating useful structures for the test cases
-type winnerTestOut struct {
-	politicianID int
-	err          error
-}
-type winnerTest struct {
-	in  Round
-	out winnerTestOut
-}
-
 // Test cases
-var winnerTests = []winnerTest{
-	winnerTest{
-		in: Round{1: 3, 2: 2, 3: 1},
-		out: winnerTestOut{
-			politicianID: 1,
-			err:          nil,
-		},
+var winnerTests = []struct {
+	in              Round
+	outPoliticianID int
+	outErr          error
+}{
+	{
+		in:              Round{1: 3, 2: 2, 3: 1},
+		outPoliticianID: 1,
+		outErr:          nil,
 	},
-	winnerTest{
-		in: Round{},
-		out: winnerTestOut{
-			politicianID: 0,
-			err:          errors.New("No vote seems to have been registered yet."),
-		},
+	{
+		in:              Round{},
+		outPoliticianID: 0,
+		outErr:          errors.New("No vote seems to have been registered yet."),
 	},
-	winnerTest{
-		in: Round{1: 2, 2: 2, 3: 1},
-		out: winnerTestOut{
-			politicianID: 0,
-			err:          errors.New("Two candidates are tied! John Doe, of \"GOP\" and John Doe, of \"GOP\" both have 2 votes"),
-		},
+	{
+		in:              Round{1: 2, 2: 2, 3: 1},
+		outPoliticianID: 0,
+		outErr:          errors.New("Two candidates are tied! John Doe, of \"GOP\" and John Doe, of \"GOP\" both have 2 votes"),
 	},
 }
 
@@ -137,13 +125,13 @@ func TestWinner(t *testing.T) {
 		computedPolitician, err := testCase.in.Winner(mockedReader{})
 
 		// Comparing the value of the error
-		if errorsUnequal(err, testCase.out.err) {
-			t.Errorf("Error status unexpected. Computed: %v. Expected: %v.", err, testCase.out.err)
+		if errorsUnequal(err, testCase.outErr) {
+			t.Errorf("Error status unexpected. Computed: %v. Expected: %v.", err, testCase.outErr)
 		}
 
 		// Comparing the value of the politician
-		if computedPolitician.ID != testCase.out.politicianID {
-			t.Errorf("Unexpected winning politician. Computed: %v. Expected: %v.", computedPolitician.ID, testCase.out.politicianID)
+		if computedPolitician.ID != testCase.outPoliticianID {
+			t.Errorf("Unexpected winning politician. Computed: %v. Expected: %v.", computedPolitician.ID, testCase.outPoliticianID)
 		}
 	}
 }
