@@ -30,7 +30,7 @@ func TestComputeRound(t *testing.T) {
 
 	// Assertions
 	if !reflect.DeepEqual(computedRound, expectedRound) {
-		t.Errorf("Round is not as computed. Computed: %v. Expected: %v.", computedRound, expectedRound)
+		t.Errorf("Round is not as expected. Computed: %v. Expected: %v.", computedRound, expectedRound)
 	}
 }
 
@@ -75,7 +75,7 @@ func TestComputeRounds(t *testing.T) {
 		computedRound := ComputeRound(testCase.in)
 
 		if !reflect.DeepEqual(computedRound, testCase.out) {
-			t.Errorf("Round is not as computed. Computed: %v. Expected: %v.", computedRound, testCase.out)
+			t.Errorf("Round is not as expected. Computed: %v. Expected: %v.", computedRound, testCase.out)
 		}
 	}
 }
