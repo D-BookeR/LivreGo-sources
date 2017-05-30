@@ -41,7 +41,7 @@ func (r Round) Winner(m model.Reader) (model.Politician, error) {
 	}
 
 	if currentMaxScore == 0 {
-		return model.Politician{}, errors.New("No vote seems to have been registered yet.")
+		return model.Politician{}, errors.New("Il ne semble y avoir aucun vote enregistré pour le moment.")
 	}
 
 	if currentMaxScore == secondMaxScore {
@@ -53,7 +53,7 @@ func (r Round) Winner(m model.Reader) (model.Politician, error) {
 		if err != nil {
 			return model.Politician{}, err
 		}
-		return model.Politician{}, fmt.Errorf("Two candidates are tied! %s and %s both have %d votes", currentWinnerPolitician, secondToWinnerPolitician, currentMaxScore)
+		return model.Politician{}, fmt.Errorf("Deux candidats sont à égalité ! %s et %s ont tous deux %d votes.", currentWinnerPolitician, secondToWinnerPolitician, currentMaxScore)
 	}
 
 	currentWinnerPolitician, err := m.PoliticianFromID(currentWinner)

@@ -47,5 +47,5 @@ func main() {
 		return
 	}
 
-	fmt.Printf("The winner is %s!\n", w)
+	fmt.Printf("Le gagnant est %s!\n", w)
 }

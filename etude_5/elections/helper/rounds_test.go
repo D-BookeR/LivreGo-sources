@@ -96,12 +96,12 @@ var winnerTests = []struct {
 	{
 		in:              Round{},
 		outPoliticianID: 0,
-		outErr:          errors.New("No vote seems to have been registered yet."),
+		outErr:          errors.New("Il ne semble y avoir aucun vote enregistré pour le moment."),
 	},
 	{
 		in:              Round{1: 2, 2: 2, 3: 1},
 		outPoliticianID: 0,
-		outErr:          errors.New("Two candidates are tied! John Doe, of \"GOP\" and John Doe, of \"GOP\" both have 2 votes"),
+		outErr:          errors.New("Deux candidats sont à égalité ! John Doe, de \"GOP\" et John Doe, de \"GOP\" ont tous deux 2 votes."),
 	},
 }
 

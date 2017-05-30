@@ -33,7 +33,7 @@ func main() {
 		return
 	}
 
-	fmt.Printf("The winner is %s!\n", w)
+	fmt.Printf("Le gagnant est %s!\n", w)
 
 	fmt.Println(len(allVotes))
 
@@ -44,6 +44,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("The winner is %s!\n", p)
+	fmt.Printf("Le gagnant est %s!\n", p)
 
 }

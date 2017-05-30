@@ -36,7 +36,7 @@ type Vote struct {
 type Votes []Vote
 
 func (p Politician) String() string {
-	return p.Name + ", of \"" + p.Party + "\""
+	return p.Name + ", de \"" + p.Party + "\""
 }
 
 func (v Vote) String() string {

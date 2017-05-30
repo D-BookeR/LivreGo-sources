@@ -17,7 +17,7 @@ type voter struct {
 }
 
 func (p politician) String() string {
-	return p.Name + ", of \"" + p.Party + "\""
+	return p.Name + ", de \"" + p.Party + "\""
 }
 
 func (v voter) String() string {
@@ -27,8 +27,6 @@ func (v voter) String() string {
 type votes map[voter]*politician
 
 type round map[politician]int
-
-// IDEA: how to ensure there is only one vote per voter = no need
 
 // Computes the summary of the round
 func (v votes) computeRound() round {
@@ -44,7 +42,6 @@ func (v votes) computeRound() round {
 	return r
 }
 
-// Notice: no getWinner
 func (r round) winner() (politician, error) {
 	currentMaxScore := 0
 	secondMaxScore := 0
@@ -61,11 +58,11 @@ func (r round) winner() (politician, error) {
 	}
 
 	if currentMaxScore == 0 {
-		return politician{}, errors.New("No vote seems to have been registered yet.")
+		return politician{}, errors.New("Il ne semble y avoir aucun vote enregistré pour le moment.")
 	}
 
 	if currentMaxScore == secondMaxScore {
-		return politician{}, fmt.Errorf("Two candidates are tied! %s and %s both have %d votes", currentWinner, secondToWinner, currentMaxScore)
+		return politician{}, fmt.Errorf("Deux candidats sont à égalité ! %s et %s ont tous deux %d votes.", currentWinner, secondToWinner, currentMaxScore)
 	}
 
 	return currentWinner, nil
@@ -91,8 +88,6 @@ func main() {
 	v[voter{Name: "Olivier Vaselin", ID: 7}] = &lagace
 	v[voter{Name: "Antoine Tarre", ID: 8}] = &dorion
 
-	// IDEA: what happens if a candidate has no vote --> compile error!
-
 	r := v.computeRound()
 
 	delete(r, blanc)
@@ -104,5 +99,5 @@ func main() {
 		return
 	}
 
-	fmt.Printf("The winner is %s!\n", w)
+	fmt.Printf("Le gagnant est %s!\n", w)
 }
