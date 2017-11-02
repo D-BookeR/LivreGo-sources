@@ -72,14 +72,14 @@ func (m *FromFiles) PoliticianFromID(ID int) (Politician, error) {
 }
 
 var allVotes Votes
+var errs chan error
 
 func oneVoteFile(fileName string, m *FromFiles, wg *sync.WaitGroup, mutex *sync.Mutex) {
 	defer wg.Done()
 	var allVotesFromThisFile Votes
 	file, err := ioutil.ReadFile(path.Join(m.DirPath, fileName))
+	errs <- err
 	if err != nil {
-		fmt.Printf("File %s had an issue: ", fileName)
-		fmt.Println(err)
 		return
 	}
 	json.Unmarshal(file, &allVotesFromThisFile)
@@ -94,11 +94,22 @@ func (m *FromFiles) AllVotes() (Votes, error) {
 		var wg sync.WaitGroup
 		var mutex = &sync.Mutex{}
 		allVotes = Votes{}
+
+		errs = make(chan error, len(m.VotesFileNames))
+
 		wg.Add(len(m.VotesFileNames))
 		for _, fileName := range m.VotesFileNames {
 			go oneVoteFile(fileName, m, &wg, mutex)
 		}
 		wg.Wait()
+
+		close(errs)
+		for err := range errs {
+			if err != nil {
+				return nil, err
+			}
+		}
+
 	}
 	return allVotes, nil
 }
