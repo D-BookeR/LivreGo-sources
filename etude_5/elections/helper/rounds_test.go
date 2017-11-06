@@ -13,6 +13,15 @@ func TestAlwaysPasses(t *testing.T) {
 
 }
 
+/* Testing the most trivial thing */
+func TestAddition(t *testing.T) {
+	computedInt := 2 + 2
+	expectedInt := 4
+	if computedInt != expectedInt {
+		t.Errorf("Addition is not as expected. Computed: %d. Expected: %d.", computedInt, expectedInt)
+	}
+}
+
 /* Simple test for the ComputeRound() function, made of one test case */
 func TestComputeRound(t *testing.T) {
 	// Computed
@@ -101,7 +110,7 @@ var winnerTests = []struct {
 	{
 		in:              Round{1: 2, 2: 2, 3: 1},
 		outPoliticianID: 0,
-		outErr:          errors.New("Deux candidats sont à égalité ! John Doe, de \"GOP\" et John Doe, de \"GOP\" ont tous deux 2 votes."),
+		outErr:          errors.New("deux candidats sont à égalité ! John Doe, de \"GOP\" et John Doe, de \"GOP\" ont tous deux 2 votes"),
 	},
 }
 

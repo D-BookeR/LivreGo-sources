@@ -35,12 +35,12 @@ type Vote struct {
 // Votes is a set of votes
 type Votes []Vote
 
-func (p Politician) String() string {
-	return p.Name + ", de \"" + p.Party + "\""
+func (p *Politician) String() string {
+	return fmt.Sprintf("%s, de \"%s\"", (*p).Name, (*p).Party)
 }
 
-func (v Vote) String() string {
-	return v.Name
+func (v *Vote) String() string {
+	return (*v).Name
 }
 
 var allPoliticians Politicians
@@ -52,7 +52,9 @@ func (m *FromFiles) AllPoliticians() (Politicians, error) {
 		if err != nil {
 			return nil, err
 		}
-		json.Unmarshal(file, &allPoliticians)
+		if err = json.Unmarshal(file, &allPoliticians); err != nil {
+			return nil, err
+		}
 	}
 	return allPoliticians, nil
 }
@@ -68,38 +70,43 @@ func (m *FromFiles) PoliticianFromID(ID int) (Politician, error) {
 			return p, nil
 		}
 	}
-	return Politician{}, fmt.Errorf("Politician of ID %d doesn't exist", ID)
+	return Politician{}, fmt.Errorf("politician of ID %d doesn't exist", ID)
 }
 
 var allVotes Votes
-var errs chan error
-
-func oneVoteFile(fileName string, m *FromFiles, wg *sync.WaitGroup, mutex *sync.Mutex) {
-	defer wg.Done()
-	var allVotesFromThisFile Votes
-	file, err := ioutil.ReadFile(path.Join(m.DirPath, fileName))
-	errs <- err
-	if err != nil {
-		return
-	}
-	json.Unmarshal(file, &allVotesFromThisFile)
-	mutex.Lock()
-	allVotes = append(allVotes, allVotesFromThisFile...)
-	mutex.Unlock()
-}
 
 // AllVotes fetches all votes from JSON file if cache is empty, returns the cache otherwise
 func (m *FromFiles) AllVotes() (Votes, error) {
 	if allVotes == nil {
-		var wg sync.WaitGroup
-		var mutex = &sync.Mutex{}
+		wg := &sync.WaitGroup{}
+		mutex := &sync.Mutex{}
 		allVotes = Votes{}
 
-		errs = make(chan error, len(m.VotesFileNames))
+		errs := make(chan error, len(m.VotesFileNames))
 
 		wg.Add(len(m.VotesFileNames))
 		for _, fileName := range m.VotesFileNames {
-			go oneVoteFile(fileName, m, &wg, mutex)
+
+			fileNameRef := &fileName
+
+			go func() {
+				defer wg.Done()
+				var votesInFile Votes
+				file, err := ioutil.ReadFile(path.Join(m.DirPath, *fileNameRef))
+				if err != nil {
+					errs <- err
+					return
+				}
+				if err = json.Unmarshal(file, &votesInFile); err != nil {
+					errs <- err
+					return
+				}
+				mutex.Lock()
+				defer mutex.Unlock()
+				allVotes = append(allVotes, votesInFile...)
+				errs <- nil
+			}()
+
 		}
 		wg.Wait()
 

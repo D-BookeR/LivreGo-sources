@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 )
 
 type politician struct {
@@ -16,12 +17,12 @@ type voter struct {
 	ID   int
 }
 
-func (p politician) String() string {
-	return p.Name + ", de \"" + p.Party + "\""
+func (p *politician) String() string {
+	return fmt.Sprintf("%s, de \"%s\"", (*p).Name, (*p).Party)
 }
 
-func (v voter) String() string {
-	return v.Name
+func (v *voter) String() string {
+	return (*v).Name
 }
 
 type votes map[voter]*politician
@@ -29,26 +30,26 @@ type votes map[voter]*politician
 type round map[politician]int
 
 // Computes the summary of the round
-func (v votes) computeRound() round {
+func (v *votes) computeRound() round {
 	r := make(round)
-	for _, p := range v {
+	for _, p := range *v {
 		val, exists := r[*p]
 		if exists {
 			r[*p] = val + 1
-		} else {
-			r[*p] = 1
+			continue
 		}
+		r[*p] = 1
 	}
 	return r
 }
 
-func (r round) winner() (politician, error) {
-	currentMaxScore := 0
-	secondMaxScore := 0
+func (r *round) winner() (politician, error) {
+	var currentMaxScore int
+	var secondMaxScore int
 	var currentWinner politician
 	var secondToWinner politician
 
-	for p, s := range r {
+	for p, s := range *r {
 		if s >= currentMaxScore {
 			secondMaxScore = currentMaxScore
 			currentMaxScore = s
@@ -62,7 +63,7 @@ func (r round) winner() (politician, error) {
 	}
 
 	if currentMaxScore == secondMaxScore {
-		return politician{}, fmt.Errorf("Deux candidats sont à égalité ! %s et %s ont tous deux %d votes.", currentWinner, secondToWinner, currentMaxScore)
+		return politician{}, fmt.Errorf("deux candidats sont à égalité ! %s et %s ont tous deux %d votes", currentWinner.String(), secondToWinner.String(), currentMaxScore)
 	}
 
 	return currentWinner, nil
@@ -94,10 +95,9 @@ func main() {
 
 	w, err := r.winner()
 	if err != nil {
-		fmt.Println("ERROR")
-		fmt.Println(err)
+		log.Printf("error : %s \n", err)
 		return
 	}
 
-	fmt.Printf("Le gagnant est %s!\n", w)
+	log.Printf("Le gagnant est %s!\n", w.String())
 }

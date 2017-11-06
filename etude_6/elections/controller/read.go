@@ -18,7 +18,7 @@ func Winner(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprint(w, winner)
+	fmt.Fprintf(w, "%s", winner.String())
 }
 
 // Count writes to the response the number of votes currently in the database

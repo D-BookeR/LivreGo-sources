@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 // Politician contains all data about one given politician
 type Politician struct {
 	Name  string `json:"name" bson:"name"`
@@ -20,10 +22,10 @@ type Vote struct {
 // Votes is a set of votes
 type Votes []Vote
 
-func (p Politician) String() string {
-	return p.Name + ", de \"" + p.Party + "\""
+func (p *Politician) String() string {
+	return fmt.Sprintf("%s, de \"%s\"", (*p).Name, (*p).Party)
 }
 
-func (v Vote) String() string {
-	return v.Name
+func (v *Vote) String() string {
+	return (*v).Name
 }

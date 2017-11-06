@@ -23,8 +23,7 @@ func (m *FromMongo) AllPoliticians() (Politicians, error) {
 
 	c := session.DB(m.DbName).C(m.PoliticiansCollection)
 	var result []Politician
-	err = c.Find(nil).All(&result)
-	if err != nil {
+	if err = c.Find(nil).All(&result); err != nil {
 		return nil, err
 	}
 
@@ -41,8 +40,7 @@ func (m *FromMongo) PoliticianFromID(ID int) (Politician, error) {
 
 	c := session.DB(m.DbName).C(m.PoliticiansCollection)
 	var result Politician
-	err = c.Find(bson.M{"id": ID}).One(&result)
-	if err != nil {
+	if err = c.Find(bson.M{"id": ID}).One(&result); err != nil {
 		return Politician{}, err
 	}
 
@@ -59,8 +57,7 @@ func (m *FromMongo) AllVotes() (Votes, error) {
 
 	c := session.DB(m.DbName).C(m.VotesCollection)
 	var result []Vote
-	err = c.Find(nil).All(&result)
-	if err != nil {
+	if err = c.Find(nil).All(&result); err != nil {
 		return nil, err
 	}
 
@@ -80,8 +77,7 @@ func (m *FromMongo) Winner() (Politician, error) {
 
 	// db.votes.aggregate([{$group:{_id: "$politician_id", count: {$sum: 1}}},{$sort: {count: -1}},{$limit:1}])
 	pipe := c.Pipe([]bson.M{{"$group": bson.M{"_id": "$politician_id", "count": bson.M{"$sum": 1}}}, bson.M{"$sort": bson.M{"count": -1}}, bson.M{"$limit": 1}})
-	err = pipe.One(&resp)
-	if err != nil {
+	if err = pipe.One(&resp); err != nil {
 		return Politician{}, err
 	}
 
@@ -103,10 +99,5 @@ func (m *FromMongo) SaveVote(v Vote) error {
 	defer session.Close()
 
 	c := session.DB(m.DbName).C(m.VotesCollection)
-	err = c.Insert(v)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return c.Insert(v)
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/D-BookeR/LivreGo-sources/etude_5/elections/helper"
 	"github.com/D-BookeR/LivreGo-sources/etude_5/elections/model"
@@ -15,7 +15,7 @@ func main() {
 	// Getting all votes
 	allVotes, err := m.AllVotes()
 	if err != nil {
-		fmt.Println(err)
+		log.Printf("error : %s \n", err)
 		return
 	}
 
@@ -28,22 +28,20 @@ func main() {
 	//
 	w, err := r.Winner(&m)
 	if err != nil {
-		fmt.Println("ERROR")
-		fmt.Println(err)
+		log.Printf("error : %s \n", err)
 		return
 	}
 
-	fmt.Printf("Le gagnant est %s!\n", w)
+	log.Printf("Le gagnant est %s!\n", w.String())
 
-	fmt.Println(len(allVotes))
+	log.Println(len(allVotes))
 
 	// Getting the winner directly
 	p, err := m.Winner()
 	if err != nil {
-		fmt.Println("ERROR")
-		fmt.Println(err)
+		log.Printf("error : %s \n", err)
 		return
 	}
-	fmt.Printf("Le gagnant est %s!\n", p)
+	log.Printf("Le gagnant est %s!\n", p.String())
 
 }

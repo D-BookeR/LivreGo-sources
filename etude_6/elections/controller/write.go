@@ -32,8 +32,7 @@ func RegisterVote(w http.ResponseWriter, r *http.Request) {
 	// Saving vote into the MongoDB database
 	m := model.FromMongo{Server: "localhost", DbName: "elections", PoliticiansCollection: "politicians", VotesCollection: "votes"}
 	vote := model.Vote{Name: name, ID: id, PoliticianID: politicianIDInt}
-	err = m.SaveVote(vote)
-	if err != nil {
+	if err = m.SaveVote(vote); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return

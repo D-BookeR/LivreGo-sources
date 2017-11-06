@@ -17,21 +17,21 @@ func ComputeRound(vs model.Votes) Round {
 		val, exists := r[v.PoliticianID]
 		if exists {
 			r[v.PoliticianID] = val + 1
-		} else {
-			r[v.PoliticianID] = 1
+			continue
 		}
+		r[v.PoliticianID] = 1
 	}
 	return r
 }
 
 // Winner finds the winner from a round
-func (r Round) Winner(m model.Reader) (model.Politician, error) {
-	currentMaxScore := 0
-	secondMaxScore := 0
+func (r *Round) Winner(m model.Reader) (model.Politician, error) {
+	var currentMaxScore int
+	var secondMaxScore int
 	var currentWinner int
 	var secondToWinner int
 
-	for p, s := range r {
+	for p, s := range *r {
 		if s >= currentMaxScore {
 			secondMaxScore = currentMaxScore
 			currentMaxScore = s
@@ -53,7 +53,7 @@ func (r Round) Winner(m model.Reader) (model.Politician, error) {
 		if err != nil {
 			return model.Politician{}, err
 		}
-		return model.Politician{}, fmt.Errorf("Deux candidats sont à égalité ! %s et %s ont tous deux %d votes.", currentWinnerPolitician, secondToWinnerPolitician, currentMaxScore)
+		return model.Politician{}, fmt.Errorf("deux candidats sont à égalité ! %s et %s ont tous deux %d votes", currentWinnerPolitician.String(), secondToWinnerPolitician.String(), currentMaxScore)
 	}
 
 	currentWinnerPolitician, err := m.PoliticianFromID(currentWinner)

@@ -34,12 +34,12 @@ type Vote struct {
 // Votes is a set of votes
 type Votes []Vote
 
-func (p Politician) String() string {
-	return p.Name + ", de \"" + p.Party + "\""
+func (p *Politician) String() string {
+	return fmt.Sprintf("%s, de \"%s\"", (*p).Name, (*p).Party)
 }
 
-func (v Vote) String() string {
-	return v.Name
+func (v *Vote) String() string {
+	return (*v).Name
 }
 
 var allPoliticians Politicians
@@ -51,7 +51,9 @@ func (m *FromFiles) AllPoliticians() (Politicians, error) {
 		if err != nil {
 			return nil, err
 		}
-		json.Unmarshal(file, &allPoliticians)
+		if err = json.Unmarshal(file, &allPoliticians); err != nil {
+			return nil, err
+		}
 	}
 	return allPoliticians, nil
 }
@@ -67,7 +69,7 @@ func (m *FromFiles) PoliticianFromID(ID int) (Politician, error) {
 			return p, nil
 		}
 	}
-	return Politician{}, fmt.Errorf("Politician of ID %d doesn't exist", ID)
+	return Politician{}, fmt.Errorf("politician of ID %d doesn't exist", ID)
 }
 
 var allVotes Votes
@@ -77,13 +79,15 @@ func (m *FromFiles) AllVotes() (Votes, error) {
 	if allVotes == nil {
 		allVotes = Votes{}
 		for _, fileName := range m.VotesFileNames {
-			var allVotesFromThisFile Votes
+			var votesInFile Votes
 			file, err := ioutil.ReadFile(path.Join(m.DirPath, fileName))
 			if err != nil {
 				return nil, err
 			}
-			json.Unmarshal(file, &allVotesFromThisFile)
-			allVotes = append(allVotes, allVotesFromThisFile...)
+			if err = json.Unmarshal(file, &votesInFile); err != nil {
+				return nil, err
+			}
+			allVotes = append(allVotes, votesInFile...)
 		}
 	}
 	return allVotes, nil
