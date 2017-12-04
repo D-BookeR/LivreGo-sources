@@ -27,5 +27,5 @@ func (p *Politician) String() string {
 }
 
 func (v *Vote) String() string {
-	return (*v).Name
+	return v.Name
 }

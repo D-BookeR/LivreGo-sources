@@ -22,7 +22,7 @@ func (p *politician) String() string {
 }
 
 func (v *voter) String() string {
-	return (*v).Name
+	return v.Name
 }
 
 type votes map[voter]*politician
