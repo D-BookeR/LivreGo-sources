@@ -41,7 +41,7 @@ func (r *Round) Winner(m model.Reader) (model.Politician, error) {
 	}
 
 	if currentMaxScore == 0 {
-		return model.Politician{}, errors.New("Il ne semble y avoir aucun vote enregistré pour le moment.")
+		return model.Politician{}, errors.New("il ne semble y avoir aucun vote enregistré pour le moment.")
 	}
 
 	if currentMaxScore == secondMaxScore {

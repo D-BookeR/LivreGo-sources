@@ -59,7 +59,7 @@ func (r *round) winner() (politician, error) {
 	}
 
 	if currentMaxScore == 0 {
-		return politician{}, errors.New("Il ne semble y avoir aucun vote enregistré pour le moment.")
+		return politician{}, errors.New("il ne semble y avoir aucun vote enregistré pour le moment.")
 	}
 
 	if currentMaxScore == secondMaxScore {

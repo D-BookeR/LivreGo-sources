@@ -105,7 +105,7 @@ var winnerTests = []struct {
 	{
 		in:              Round{},
 		outPoliticianID: 0,
-		outErr:          errors.New("Il ne semble y avoir aucun vote enregistré pour le moment."),
+		outErr:          errors.New("il ne semble y avoir aucun vote enregistré pour le moment."),
 	},
 	{
 		in:              Round{1: 2, 2: 2, 3: 1},
