@@ -13,6 +13,6 @@ Et cerise sur le gâteau, vous y trouverez des illustrations de [CommitStrip](ht
 
 
 
-Les data des exemples se trouvent [ici](https://github.com/D-BookeR/LivreGo-data).
+Les données des exemples se trouvent [ici](https://github.com/D-BookeR/LivreGo-data).
 
 
